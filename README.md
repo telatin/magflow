@@ -19,6 +19,6 @@ graph TD;
  ASSEMBLE --> "join";
  METABAT --> "join";
  ASSEMBLE --> "join";
- "join" --> DASTOOL
+ "join" --> DASTOOL;
 
 ```
