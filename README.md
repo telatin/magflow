@@ -4,9 +4,9 @@
 graph TD;
  INPUT_READS --> FASTP;
  FASTP --> ASSEMBLE;
- FASTP --> "mix;
+ FASTP --> "mix";
  ASSEMBLE --> AB_INDEX;
- AB_INDEX --> p6;
+ AB_INDEX --> AB_MAP;
  FASTP --> AB_MAP;
  AB_MAP --> AB_COV;
  AB_COV --> "join";
