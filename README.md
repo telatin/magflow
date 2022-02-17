@@ -4,15 +4,14 @@
 graph TD;
  INPUT_READS --> FASTP;
  FASTP --> ASSEMBLE;
- FASTP --> "mix";
+ FASTP --> mix;
  ASSEMBLE --> AB_INDEX;
  AB_INDEX --> AB_MAP;
  FASTP --> AB_MAP;
  AB_MAP --> AB_COV;
- AB_COV --> "join";
+ AB_COV --> join;
  ASSEMBLE --> PRODIGAL;
- PRODIGAL --> "point";
- PRODIGAL --> ".";
+ PRODIGAL --> point;
  FASTP --> MAXBIN;
  ASSEMBLE --> MAXBIN;
  MAXBIN --> "join";
@@ -20,5 +19,4 @@ graph TD;
  METABAT --> "join";
  ASSEMBLE --> "join";
  "join" --> DASTOOL;
-
 ```
