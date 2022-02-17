@@ -14,9 +14,9 @@ graph TD;
  PRODIGAL --> point;
  FASTP --> MAXBIN;
  ASSEMBLE --> MAXBIN;
- MAXBIN --> "join";
- ASSEMBLE --> "join";
- METABAT --> "join";
- ASSEMBLE --> "join";
- "join" --> DASTOOL;
+ MAXBIN --> join;
+ ASSEMBLE --> join;
+ METABAT --> join;
+ ASSEMBLE --> join;
+ join --> DASTOOL;
 ```
