@@ -58,7 +58,7 @@ From: centos:centos7.6.1810
 
 To build the image (`.simg`) from the definition file (`.def`):
 ```bash
-sudo singularity build denovo.simg denovo.def
+sudo singularity build ${workflow}.simg ${workflow}.def
 ```
 
 
@@ -68,10 +68,10 @@ A dockerfile is provided, that can be built with:
 
 ```bash
 # We can call the image "denovo", tagging it as last version
-sudo docker build -t denovo:latest .
+sudo docker build -t ${workflow}:latest .
 
 # Test any tool like:
-sudo docker run --rm denovo:latest abricate -h
+sudo docker run --rm ${workflow}:latest abricate -h
 ```
 
 ## A different approach: nf-core modules
