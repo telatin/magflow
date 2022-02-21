@@ -4,20 +4,27 @@ use warnings;
 use Cwd qw(cwd);
 use File::Basename;
 use Data::Dumper;
+use Getopt::Long;
 
 my $job_dir = cwd;
-my $contigs_file = "contigs.fna";
-my ($sampleID, $threads) = @ARGV;
-die "Missing parameter: Sample_ID [threads]\n" unless ($sampleID);
-
-$threads //= $ENV{'THREADS'};
-$threads //= 1;
-
+my $opt_contigs_file = "contigs.fna";
+my $opt_project_id   = "";
+my $opt_failsafe     = 0;
+my $opt_threads      = 1;
+GetOptions(
+    "c|contigs-file=s" => \$opt_contigs_file,
+    "p|project-id=s" => \$opt_project_id,
+    "t|threads=i" => \$opt_threads,
+    "failsafe" => \$opt_failsafe,
+);
+ 
+### ======================
 ## INPUT
+### ======================
+
 # Output of MetaBat (*.fa) and MaxBin (*.fasta)
 ## OUTPUT
-# das_tool: 
-#rm *unbinned.fa *tooShort.fa *lowDepth.fa
+# das_tool:  rm *unbinned.fa *tooShort.fa *lowDepth.fa
 removeIfContains('unbinned.fa', 'tooShort.fa', 'lowDepth.fa');
 
 ### ==== RETRIEVE INPUT FILES FROM MAXBIN AND METABAT
@@ -26,8 +33,9 @@ my @metabat_files = listByExt('fa');
 # MaxBin output (*.fasta)
 my @maxbin_files = listByExt('fasta');
 
-say STDERR 'METABAT FILES (.fa): ', scalar @metabat_files, ":\n ", join("\n ", @metabat_files);
-say STDERR 'MAXBIN FILES (.fasta):  ', scalar @maxbin_files,  ":\n ", join("\n ", @maxbin_files);
+say STDERR "   PROJECT: $opt_project_id";
+say STDERR ' * METABAT FILES (.fa): ', scalar @metabat_files, ":\n ", join("\n ", @metabat_files);
+say STDERR ' * MAXBIN FILES (.fasta):  ', scalar @maxbin_files,  ":\n ", join("\n ", @maxbin_files);
 
 ### ==== PREPROCESS 
 my $MaxBinCmd = qq(Fasta_to_Scaffolds2Bin.sh   --input_folder ./     --extension fasta > maxbin.tsv);
@@ -74,18 +82,50 @@ if (scalar @metabat_files and scalar @maxbin_files) {
     exit 1;
 }
 
-### ====EXECUTE DAS TOOL
+### ======================
+### EXECUTE DAS TOOL
+### ======================
+
 my $das_command = qq(DAS_Tool -l $labels -i $tsv_files --create_plots 1 ) .
-                  qq( -c $contigs_file  -o refine  --search_engine diamond  -t $threads  --write_bins);
+                  qq( -c $opt_contigs_file  -o refine  --search_engine diamond  -t $opt_threads  --write_bins);
 
-system($das_command) || say STDERR "Warning: DAS_Tool returned non 0 (ignoring)";
+if (system($das_command) == 0) {
+    say STDERR "DAS_Tools finished successfully.";
+} else {
+    say STDERR "Warning: DAS_Tool returned non 0 (ignoring)";
+    if ($opt_failsafe) {
+        say STDERR "Failsafe exit";
+    } else {
+        say STDERR "ERROR: DAS_Tool returned non 0";
+        exit 1;
+    }
+}
 
+### ======================
 ### CHECK OUTPUT FILES
+### ======================
 
 my @das_bins = listFiles("$job_dir/refine_DASTool_bins");
-
 say STDERR scalar @das_bins, ' bins: ', join(',', @das_bins);
 
+if ($opt_project_id ne "") {
+    say STDERR " Project ID: $opt_project_id (renaming output)";
+
+    # mv refine_DASTool_summary.txt 3SL3.summary.txt
+    my $summary_file     = "$job_dir/refine_DASTool_summary.txt";
+    my $new_summary_file = "$job_dir/$opt_project_id .summary.txt";
+    if (-e $summary_file) {
+        say STDERR "INFO: Moving $summary_file to $new_summary_file";
+        move($summary_file, $new_summary_file) || say STDERR "Warning: Could not move $summary_file to $new_summary_file";
+    }
+
+    #  mv refine_DASTool_bins 3SL3
+    my $new_bin_dir = "$job_dir/$opt_project_id";
+    if (-e $new_bin_dir) {
+        say STDERR "INFO: Moving $new_bin_dir to $new_bin_dir.old";
+        move("refine_DASTool_bin", "$new_bin_dir") || say STDERR "Warning: Could not move 'refine_DASTool_bin' to $new_bin_dir";
+    }
+}
  
 sub fileEmpty {
     my $filename = shift @_;
