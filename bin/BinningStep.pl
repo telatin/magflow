@@ -5,6 +5,7 @@ use Cwd qw(cwd);
 use File::Basename;
 use Data::Dumper;
 use Getopt::Long;
+use File::Copy;
 
 my $job_dir = cwd;
 my $opt_contigs_file = "contigs.fna";
