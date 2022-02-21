@@ -160,9 +160,9 @@ process DASTOOL {
 
     script:
     """
-    BinningStep.pl ${sample_id}
-    mv refine_DASTool_summary.txt ${sample_id}.summary.txt
-    mv refine_DASTool_bins ${sample_id}
+    BinningStep.pl --failsafe -p ${sample_id} -t ${task.cpus} 
+    #mv refine_DASTool_summary.txt ${sample_id}.summary.txt
+    #mv refine_DASTool_bins ${sample_id}
     """
     stub:
     """
