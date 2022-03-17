@@ -2,7 +2,7 @@
 
 ```mermaid
 graph TD;
- style input fill:#f9f,stroke:#333,stroke-width:4px
+ style input fill:#ff9,stroke:#333,stroke-width:2px
  input(INPUT_READS) --> FASTP;
  FASTP --> SEQ_SCREEN;
  SEQ_SCREEN --> KRAKEN2;
