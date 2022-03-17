@@ -21,7 +21,7 @@ graph TD;
  CD-HIT --> PRODIGAL;
  PRODIGAL --> vConTACT2;
  vConTACT2 --> GraphAnalyzer;
- GraphAnalizer --> REPORT;
+ GraphAnalyzer --> REPORT;
  BAMTOCOUNTS --> REPORT;
  FASTP --> REPORT;
  QUAST --> REPORT;
