@@ -3,20 +3,17 @@
 ```mermaid
 graph TD;
  INPUT_READS --> FASTP;
- FASTP --> ASSEMBLE;
- FASTP --> mix;
- ASSEMBLE --> AB_INDEX;
- AB_INDEX --> AB_MAP;
- FASTP --> AB_MAP;
- AB_MAP --> AB_COV;
- AB_COV --> join;
- ASSEMBLE --> PRODIGAL;
- PRODIGAL --> point;
- FASTP --> MAXBIN;
- ASSEMBLE --> MAXBIN;
- MAXBIN --> join;
- ASSEMBLE --> join;
- METABAT --> join;
- ASSEMBLE --> join;
- join --> DASTOOL;
+ FASTP --> SEQ_SCREEN;
+ SEQ_SCREEN --> KRAKEN2;
+ KRAKEN2 --> KRONA_plot;
+ SEQ_SCREEN --> ASSEMBLY;
+ ASSEMBLY --> VirFinder;
+ ASSEMBLY --> VirSorter;
+ ASSEMBLY --> VIBRANT;
+ ASSEMBLY --> Phigaro;
+ VirFinder --> CD-HIT;
+ VirSorter --> CD-HIT ;
+ VIBRANT --> CD-HIT ;
+ Phigaro --> CD-HIT ;
+  
 ```
