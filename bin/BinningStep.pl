@@ -114,7 +114,7 @@ if ($opt_project_id ne "") {
 
     # mv refine_DASTool_summary.txt 3SL3.summary.txt
     my $summary_file     = "$job_dir/refine_DASTool_summary.txt";
-    my $new_summary_file = "$job_dir/$opt_project_id .summary.txt";
+    my $new_summary_file = "$job_dir/$opt_project_id.summary.txt";
     if (-e $summary_file) {
         say STDERR "INFO: Moving $summary_file to $new_summary_file";
         move($summary_file, $new_summary_file) || say STDERR "Warning: Could not move $summary_file to $new_summary_file";

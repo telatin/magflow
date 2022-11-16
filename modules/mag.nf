@@ -21,6 +21,9 @@ process ASSEMBLE {
 
     stub:
     """
+    # Random number
+    NUM=\$((\$RANDOM % 3 ))
+    sleep \$NUM
     touch ${sample_id}.contigs.fa
     """
 }
@@ -59,8 +62,7 @@ process MAXBIN {
         mode: 'copy'
 
     input:
-    tuple val(sample_id), path(reads) 
-    tuple val(sample_id), path(contigs) 
+    tuple val(sample_id), path(contigs), path(reads)
     
     output:
     tuple val(sample_id), path("*.maxbin.*.fasta"), optional: true, emit: bins    //Mock1.maxbin.001.fasta
@@ -152,7 +154,7 @@ process DASTOOL {
         mode: 'copy'
     
     input:
-    tuple val(sample_id), file('contigs.fna'), file("*"), file("*")
+    tuple val(sample_id), file('contigs.fna'), file("*"), file("*"), file("*")
     
     output:
     tuple val(sample_id), file("${sample_id}.summary.txt"), optional: true, emit: summary
@@ -163,6 +165,31 @@ process DASTOOL {
     BinningStep.pl --failsafe -p ${sample_id} -t ${task.cpus} 
     #mv refine_DASTool_summary.txt ${sample_id}.summary.txt
     #mv refine_DASTool_bins ${sample_id}
+    """
+    stub:
+    """
+    ls -l > ${sample_id}.summary.txt
+    mkdir -p ${sample_id}
+    touch ${sample_id}/bins.{1,2,3}.fa
+    """
+}
+
+process DASTOOL2 {
+    tag "$sample_id"
+    label "process_medium"
+    publishDir "$params.outdir/bins/", 
+        mode: 'copy'
+    
+    input:
+    tuple val(sample_id), file('contigs.fna'), file("*"), file("*"), file("*")
+    
+    output:
+    tuple val(sample_id), file("${sample_id}.summary.txt"), optional: true, emit: summary
+    tuple val(sample_id), file("${sample_id}/*.fa"),    optional: true, emit: bins
+
+    script:
+    """
+    dastool.py --failsafe -t ${task.cpus} -i . -o refine
     """
     stub:
     """

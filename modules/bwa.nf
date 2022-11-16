@@ -10,7 +10,7 @@ process INDEX {
     label "process_medium"
  
     input:
-    tuple val(sample_id), path(contigs) 
+    tuple val(sample_id), path(contigs), path(reads) 
 
     
     output:
@@ -34,7 +34,7 @@ process MAP {
         mode: 'copy'
 
     input:
-    tuple val(sample_id), path(reads) 
+    tuple val(sample_id), path(contigs), path(reads) 
     tuple val(index_name), path(index)
     
     output:

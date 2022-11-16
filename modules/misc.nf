@@ -28,6 +28,8 @@ process FASTP {
 
     stub:
     """
+    NUM=\$((\$RANDOM % 2 ))
+    sleep \$NUM
     touch ${sample_id}.fastp.json "${sample_id}_filt_R1.fastq.gz" "${sample_id}_filt_R2.fastq.gz"
 
     """
